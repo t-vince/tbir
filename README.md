@@ -1,11 +1,11 @@
 # Text-based Information Retrieval
-## Assignment
-We have chosen the programming assignment, which is devided into 2 parts.
-
 ## Deadlines
 The assignment is due to **April 29** 
 
 Source code (in C++, Java, MatLab, Python, ...) can be sent by e-mail to: sien.moens@cs.kuleuven.be, gcollell@kuleuven.be, and susana.zoghbi@cs.kuleuven.be.
+
+## Assignment
+We have chosen the programming assignment, which is devided into 2 parts.
 
 #### Part I: Warm up
 In this part of the assignment, we compare different analogy models using different vector models. Our solution can be found in the folder "Part I".
