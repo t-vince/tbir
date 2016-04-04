@@ -2,6 +2,11 @@
 ## Assignment
 We have chosen the programming assignment, which is devided into 2 parts.
 
+## Deadlines
+The assignment is due to **April 29** 
+
+Source code (in C++, Java, MatLab, Python, ...) can be sent by e-mail to: sien.moens@cs.kuleuven.be, gcollell@kuleuven.be, and susana.zoghbi@cs.kuleuven.be.
+
 #### Part I: Warm up
 In this part of the assignment, we compare different analogy models using different vector models. Our solution can be found in the folder "Part I".
 
@@ -10,11 +15,6 @@ In this part of the assignment, we compare different analogy models using differ
 #### Part II: Image search
 This part of the assignment is about making an image search by relating the images to their description. The search will then query through the descriptions to find the best associating image.
 The solution for this can be found in the folder "Part II"
-
-## Deadlines
-The assignment is due to **April 29** 
-
-Source code (in C++, Java, MatLab, Python, ...) can be sent by e-mail to: sien.moens@cs.kuleuven.be, gcollell@kuleuven.be, and susana.zoghbi@cs.kuleuven.be.
 
 ## Tools
 For now we are using python 3 in [jupyter notebook](http://ipython.org/notebook.html)
