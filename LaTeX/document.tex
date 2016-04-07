@@ -1,0 +1,94 @@
+\documentclass[11pt,a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{array}
+\usepackage{subcaption}
+\usepackage{tablefootnote}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage[a4paper]{geometry}
+%\newgeometry{left=3cm,bottom=3cm, right=3cm, top=3cm}
+
+\author{Joren Verspeelt, Jochem Geussens, Vincent Tanghe}
+\title{Semantic Embeddings in IR \\
+	\large Text-Based Information Retrieval}
+
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\renewcommand{\figurename}{Fig.}
+\renewcommand{\refname}{}
+\newcolumntype{L}{>{\centering\arraybackslash}m{3cm}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+
+\newcommand{\myitembf}[2] {
+	\item \textbf{#1 :} #2
+}
+\newcommand{\myitem}[2] {
+	\item #1 : #2
+}
+\newcommand{\tab}{
+	\-\quad
+}
+
+\newcommand{\mypageref}[1] {
+	[page \pageref{#1}]
+}
+
+\begin{document}
+\maketitle
+
+\section {Introduction}
+\input{introduction}
+
+\clearpage
+\tableofcontents
+\clearpage
+
+
+
+\section {Part I (Warm-up)}
+\subsection{Task description}
+\input{task1taskdescription}
+
+\subsection{Setup}
+\input{task1setup}
+
+\subsection{Results}
+\input{task1results}
+
+\subsection{Discussion}
+\input{task1discussion}
+
+
+
+\section{Part II}
+\subsection{Task description}
+\input{task2taskdescription}
+
+\subsection{Setup}
+\input{task2setup}
+
+\subsection{Results}
+\input{task2results}
+
+\subsection{Discussion}
+\input{task2discussion}
+
+
+\section{Conclusion}
+\input{conclusion}
+
+\section{References}
+\bibliographystyle{plain}
+\bibliography{references}
+	
+\end{document}
