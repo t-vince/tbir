@@ -64,3 +64,5 @@ target/
 *.toc
 *.out
 *.aux
+Part I/word2vec/
+Part I/GloVe-1.2/
