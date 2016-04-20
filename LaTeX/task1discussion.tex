@@ -1,0 +1,10 @@
+First of all, we see that the GloVe model seems to run a lot faster than the Word2Vec model. However, we we need to note that that not all words are found within the GloVe model. And in our implementation, as soon as one word of the analogy is mission, the whole analogy is skipped, meaning that less words need to be searched in the model. But, because of the lower dimensionality of the GloVe model, less dimensions need to be considered, making the calculations faster.
+
+[answer on the complexity question.. I dunno D:
+ Also, we should probable make a graph showing all results next to each other]
+
+If we look at the dimensionality of the GloVe representations, we see that the overall accuracy increases as the number of dimensions increases. A trade-off compared to the time needed to run the model, but a trade-off that seems worthwhile. 
+If we then look at the analogy model compared to the dimensionality, we see that the multiplication model performs better on higher dimensions, while the addition model performs better as the dimension decrease. However, this can also be because the overall accuracy decreases with a lower dimension.
+
+While running the experiment, we frequently got missing words (using the GloVe representation). It is still impractical to have a model representing every possible word that exists, so a trade-off is made towards a reasonable model size and the amount of represented words. We solved this error by either counting a missing words as a failed analogy or by skipping the sentence. However, it seems that the same word categories are missing in every dimension.
+
