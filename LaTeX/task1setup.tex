@@ -1,12 +1,12 @@
 We compare the use of different word embeddings (GloVe and Word2Vec) towards different analogy models. To test the models, we used the Google's questions. [reference to link here]
-
-We coded our solution in Python (version 2.7) using IPython Notebook. All experiments were run on a notebook with 8GB RAM memory, InteL(R) Core^{TM} i7-3610QM CPU, SSD hard disk and Windows 7 Operating System.
-
+\newline
+We coded our solution in Python (version 2.7) using IPython Notebook. All experiments were run on a notebook with 8GB RAM memory, InteL(R) Core\^{TM} i7-3610QM CPU, SSD hard disk and Windows 7 Operating System.
+\newline
 To run the different analogy models, a function per analogy model was created. These functions then use the Gensim library for Python to calculate the different vector distances.
-
+\newline
 We compare 2 analogy models:
 [Explanation about the analogy models]
-
+\newline
 We use freely available pretrained vector models for GloVe and Word2Vec. The GloVe models are almost the same format as the Word2Vec models. The only difference is that Word2Vec had a header with the dimensions. Once added, the GloVe model can also run with the default Gensim operations for Word2Vec.
-
+\newline
 If a word does not occur within the pretrained vector model, we generated two different recall numbers: One where the missing word is considered a failed for the analogy and one where the missing word is just ignored. We could also have done a third option, were we use the nearest word in the vector model instead of the missing word. However, we did not do this because this would take a lot more computing power and (as seen in the results below) we're not sure whether it would have made a difference.
