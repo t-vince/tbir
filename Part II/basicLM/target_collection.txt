@@ -1,4 +1,3 @@
-sent_id	img_id	txt_caption
 0	EiS5L2wmSbJq8Y3u	A picture of a man standing next to a horse on grass during the day with many vehicles in the background.
 1	P5xKs0Q1QB8vbgVH	A man is holding up a fish.
 2	u5EXhe28CW4XySoT	There is man motioning with his hands in front of signs in a field.
