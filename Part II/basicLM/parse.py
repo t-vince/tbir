@@ -2,6 +2,10 @@ __author__ = 'Nick Hirakawa'
 
 import re
 import sys
+import nltk
+from nltk.corpus import wordnet
+from nltk.corpus import stopwords
+from nltk.stem.wordnet import WordNetLemmatizer
 
 
 class CorpusParser:
@@ -24,12 +28,20 @@ class CorpusParser:
         with open(self.filename) as f:
             s = ''.join(f.readlines())
             blobs = s.split('\n')[1:]
+            lmtzr = WordNetLemmatizer()
+            counter = 0 
             for x in blobs:
                 text = x.split()
-                docid = text.pop(0)
                 text.pop(0)
-                self.corpus[docid] = text
-              
+                docid = text.pop(0)
+                text = ' '.join(text).lower()
+                stop = stopwords.words('english')
+                tokenized = nltk.pos_tag(nltk.word_tokenize(text))
+                text = [word for word in text.split() if word not in stop]
+                self.corpus[docid] = [lmtzr.lemmatize(WordParser.parseword(text[position]), WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]                
+                counter +=1
+                if counter % 100 == 0:
+                    print("document " + str(counter) + " parsed")
 
     def get_corpus(self):
         return self.corpus
@@ -50,12 +62,41 @@ class QueryParser:
     def parseImages(self):
         with open(self.filename) as f:
             lines = ''.join(f.readlines())
-            self.queries = [y[-1].split() for y in (x.split("\t") for x in lines.split('\n'))]
-
+            lmtzr = WordNetLemmatizer()
+            queries = [y[-1] for x in lines.split('\n') for y in [x.split('\t')]]
+            for query in queries:
+                print("lemmatizing query: " + query)
+                stop = stopwords.words('english')
+                tokenized = nltk.pos_tag(nltk.word_tokenize(query))
+                query = [word for word in query.split() if word not in stop]
+                self.queries.append([lmtzr.lemmatize(WordParser.parseword(query[position]), WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(query))])
+                
+            
     def get_queries(self):
         return self.queries
 
+class WordParser:
+    
+    @staticmethod
+    def get_wordnet_pos(treebank_tag):
+        if treebank_tag.startswith('J'):
+            return wordnet.ADJ
+        elif treebank_tag.startswith('V'):
+            return wordnet.VERB
+        elif treebank_tag.startswith('N'):
+            return wordnet.NOUN
+        elif treebank_tag.startswith('R'):
+            return wordnet.ADV
+        else:
+            return wordnet.VERB
+            
+    @staticmethod  
+    def parseword(word):
+        word = word.lower()
+        if word[-1] == ".":
+            word = word[:-1]
+        return word
 
 if __name__ == '__main__':
-	qp = QueryParser('text/queries.txt')
-	print qp.get_queries()
+    qp = QueryParser('text/queries.txt')
+    print(qp.get_queries())

@@ -1,7 +1,6 @@
 #invdx.py
 # An inverted index
 from collections import OrderedDict
-from urllib2 import *
 from json import *
 from time import time
 import sys
@@ -14,7 +13,6 @@ class InvertedIndex:
     def __init__(self):
         self.index = dict()
         self.count = 0
-        self.build_db()
 
     def __contains__(self, item):
         return item in self.index
@@ -24,42 +22,12 @@ class InvertedIndex:
 
     def __len__(self):
         return self.count
-
-    def build_db(self):
-        try:
-            urlopen('http://localhost:5984/search')
-        except HTTPError:
-            opener = build_opener(HTTPHandler)
-            request = Request('http://localhost:5984/search')
-            request.get_method = lambda: 'PUT'
-            url = opener.open(request)
-
-    def bulk_load(self, docs):
-        self.build_db()
-        data = dumps(docs)
-        opener = build_opener(HTTPHandler)
-        request = Request('http://localhost:5984/search/_bulk_docs', data=data)
-        request.add_header('Content-Type', 'application/json')
-        request.get_method = lambda: 'POST'
-        opener.open(request)
-
-    def to_db(self):
-        docs = []
-        for word in self.index:
-            doc = self.index[word]
-            doc['_id'] = word
-            docs.append(doc)
-        print len(docs)
-        upload = {'docs': docs}
-        self.bulk_load(upload)
-
     def write(self, filename='default.index'):
         with open(filename, 'w') as f:
             for word in self.index:
                 line = word + ' '
-                for docid in self.index[word]:
-                    if not docid == "_id":
-                        line += '%s-%d ' % (docid, self.index[word][docid])
+                for docid in self.index[word]:                   
+                   line += '%s:%d ' % (docid, self.index[word][docid])
                 line += '\n'
                 f.write(line)
 
