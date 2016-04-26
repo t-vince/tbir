@@ -40,11 +40,10 @@ class QueryProcessor:
                     for line in idx:
                         tmp = line.split()
                         word = tmp.pop(0)
-                        freq = [tuple(x.split(':')) for x in tmp]
+                        freq = [tuple([x[:16], x[-1]]) for x in tmp]
                         if term == word:
                             print('parsing index word:', word)
                             docs = set()
-
                             #print 'scoring documents'
                             #score documents that contain term
                             for docid, f in freq:
