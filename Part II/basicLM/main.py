@@ -1,6 +1,3 @@
-__author__ = 'Nick Hirakawa'
-
-
 from parse import *
 from query import *
 import operator
@@ -12,12 +9,12 @@ from nltk.stem.wordnet import WordNetLemmatizer
 
 def main():
     qpi = QueryParser(filename='./testqueries_val.txt')
-    cpi = CorpusParser(filename='./target_collection.txt')
+    cpi = CorpusParser(filename='./target_collection_parsed.txt')
     qp = QueryParser(filename='./queries.txt')
     cp = CorpusParser(filename='./corpus.txt')
     #cp.parse()
     print('parsing corpus')
-    cpi.parseImages()
+    cpi.readparsed()
     #qp.parse()
     print('parsing queries')
     qpi.parseImages()
@@ -39,7 +36,7 @@ def main():
         for mu, l in result.items():
             s = sorted([(k, v) for k, v in l.items()], key=operator.itemgetter(1))
             s.reverse()
-            for rank, x in enumerate(s[:25]):
+            for rank, x in enumerate(s[:50]):
                 tmp = index+1, x[0], rank+1, x[1]
                 line = '{:<} Q0 {:<} {:<} {:<} NH-QL\n'.format(*tmp)
                 if mu in lines:
