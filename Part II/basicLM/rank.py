@@ -9,7 +9,7 @@ b = 0.75
 R = 0.0
 
 mu_values1 = [10, 100, 200, 500, 1000, 2000, 2500, 3000, 5000]
-mu_values = [1,10,20,30,40,50]
+mu_values = [1]
 
 
 def score_BM25(n, f, qf, r, N, dl, avdl):

@@ -24,9 +24,8 @@ class CorpusParser:
                 text = x.split()
                 text.pop(0)
                 docid = text.pop(0)
-                text = ' '.join(text).lower()
                 stop = stopwords.words('english')
-                text = [word for word in text.split() if word not in stop and not word == '.']
+                text = [word for word in ' '.join(text).lower().split() if word not in stop and not word == '.']
                 text[-1] = text[-1][:-1]
                 tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(text)))
                 text = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]
@@ -41,9 +40,8 @@ class CorpusParser:
                 text = x.split()
                 text.pop(0)
                 docid = text.pop(0)
-                text = ' '.join(text).lower()
                 stop = stopwords.words('english')
-                text = [word for word in text.split() if word not in stop]
+                text = [word for word in ' '.join(text).lower().split() if word not in stop]
                 text[-1] = text[-1][:-1]
                 tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(text)))
                 self.corpus[docid] = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]                
@@ -66,25 +64,40 @@ class QueryParser:
     def __init__(self, filename):
         self.filename = filename
         self.queries = []
+        self.truths = []
 
-    def parse(self):
-        with open(self.filename) as f:
-            lines = ''.join(f.readlines())
-            self.queries = [x.rstrip().split() for x in lines.split('\n')[:-1]]
+    def parse(self, output):
+        with open(self.filename) as f, open(output, 'w+') as o:
+            blobs = ''.join(f.readlines()).split('\n')
+            lmtzr = WordNetLemmatizer()
+            for x in blobs:
+                truth = x.split('\t')[-2]
+                stop = stopwords.words('english')
+                text = [word for word in x.split('\t')[-1].lower().split() if word not in stop]
+                text[-1] = text[-1][:-1]
+                tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(text)))
+                query = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]
+                o.write("%s %s\n" % (truth, ' '.join(query)))
             
   
-    def parseImages(self):
+    def parseComplete(self):
         with open(self.filename) as f:
             lines = ''.join(f.readlines())
             lmtzr = WordNetLemmatizer()
             queries = [y[-1] for x in lines.split('\n') for y in [x.split('\t')]]
             for query in queries:
                 print("lemmatizing query: " + query)
-                stop = stopwords.words('english')
+                stop = stopwords.words('english')                
+                query = [word for word in query.lower().split() if word not in stop]
                 tokenized = nltk.pos_tag(nltk.word_tokenize(query))
-                query = [word for word in query.split() if word not in stop]
                 self.queries.append([lmtzr.lemmatize(WordParser.parseword(query[position]), WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(query))])
-                
+            self.truths = [y[-2] for x in lines.split('\n') for y in [x.split('\t')]]
+            
+    def readparsed(self):
+        with open(self.filename) as f:
+            lines = ''.join(f.readlines())
+            self.queries = [y[1:] for x in lines.split('\n') for y in [x.split()]]
+            self.truths = [y[0] for x in lines.split('\n') for y in [x.split()]]
             
     def get_queries(self):
         return self.queries
