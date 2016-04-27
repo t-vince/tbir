@@ -8,7 +8,7 @@ import nltk
 from nltk.stem.wordnet import WordNetLemmatizer
 
 def main():
-    qpi = QueryParser(filename='./queries_val1_parsed.txt')
+    qpi = QueryParser(filename='./queries_val2_parsed.txt')
     cpi = CorpusParser(filename='./target_collection_parsed.txt')
     qp = QueryParser(filename='./queries.txt')
     cp = CorpusParser(filename='./corpus.txt')
@@ -55,7 +55,7 @@ def main():
     filename = './imageresults/results.txt'
     with open(filename, 'w') as f:
         for prec, rec in precrec:
-            f.write(str(prec) + " " + str(rec))
+            f.write(str(prec) + " " + str(rec) + "\n")
             totalprec += prec
             totalrec += rec
     filename = './imageresults/run.txt'

@@ -62,7 +62,7 @@ class QueryProcessor:
                             else:
                                 mu_result[docid] = score
                         break
-            return mu_result
+        return mu_result
 
 '''
     def run_BM25(self, query):
