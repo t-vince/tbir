@@ -8,7 +8,7 @@ import nltk
 from nltk.stem.wordnet import WordNetLemmatizer
 
 def main():
-    qpi = QueryParser(filename='./queries_val_parsed.txt')
+    qpi = QueryParser(filename='./queries_val1_parsed.txt')
     cpi = CorpusParser(filename='./target_collection_parsed.txt')
     qp = QueryParser(filename='./queries.txt')
     cp = CorpusParser(filename='./corpus.txt')
@@ -31,33 +31,37 @@ def main():
     proc = QueryProcessor(queries, idx = "./imagedefault.idx", dlt=dlt, ft=ft, score_function='Query Likelihood')
     print('running queries')
     results = proc.run()
-    lines = OrderedDict()
+    precrec = []
+    images = cpi.get_images()
+    cut = 1000
     for index, result in enumerate(results):
-        querycounter = 0
-        for mu, l in result.items():
-            s = sorted([(k, v) for k, v in l.items()], key=operator.itemgetter(1))
-            s.reverse()
-            top = [score[0] for score in s if score[1]==s[0][1]]
-            '''
-            for rank, x in enumerate(s[:50]):
-                tmp = index+1, x[0], rank+1, x[1]
-                line = '{:<} {:<} {:<} {:<} NH-QL\n'.format(*tmp)
-                #line = "%s %s\n" % (x[0], x[1])
-                if mu in lines:
-                    lines[mu].append(line)
-                else:
-                    lines[mu] = [line]
-            '''
-            truth = qpi.truths[querycounter]
-            if truth in top:
-                print("success")
-                sys.exit()
-            querycounter += 1 
-        for mu, txt in lines.items():
-            print(txt)
-            filename = './imageresults/run.%d' % mu
-            with open(filename, 'w') as f:
-                f.writelines(txt)
+        s = sorted([(k, v) for k, v in result.items()], key=operator.itemgetter(1))
+        s.reverse()
+        correct = 0
+        cutoff = enumerate(s[:cut])
+        truth = qpi.truths[index]
+        print(truth)
+        total = images.count(truth)
+        print(total)
+        for ind, ranking in cutoff:
+           imgid = images[int(ranking[0])]
+           if imgid == truth:
+               correct +=1
+        precision = round(correct/cut,10)
+        recall = round(correct/(cut + total - correct), 10)
+        precrec.append((precision, recall))
+    totalprec = 0
+    totalrec = 0
+    filename = './imageresults/results.txt'
+    with open(filename, 'w') as f:
+        for prec, rec in precrec:
+            f.write(str(prec) + " " + str(rec))
+            totalprec += prec
+            totalrec += rec
+    filename = './imageresults/run.txt'
+    with open(filename, 'w') as f:
+        f.write(str(totalprec/len(results))+"\n")
+        f.write(str(totalrec/len(results)))
 
 
 def make_dir():
