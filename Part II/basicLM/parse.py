@@ -6,6 +6,8 @@ import nltk
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.stem.snowball import SnowballStemmer
+from textblob import TextBlob
 
 
 class CorpusParser:
@@ -25,27 +27,25 @@ class CorpusParser:
                 text = x.split()
                 docid = text.pop(0)
                 imgid = text.pop(0)
-                text = ' '.join(text).lower()
+                text = ' '.join(text).lower().translate(dict.fromkeys(map(ord, u".,:;\"'")))
                 stop = stopwords.words('english')
                 text = [word for word in text.split() if word not in stop and not word == '.']
-                text[-1] = text[-1][:-1]
                 tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(text)))
-                text = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]
+                text = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]                
                 o.write("%s %s %s \n" % (docid, imgid, ' '.join(text)))
                 
     def parseComplete(self):
         with open(self.filename) as f:
             s = ''.join(f.readlines())
-            blobs = s.split('\n')[1:]
+            blobs = s.split('\n')
             lmtzr = WordNetLemmatizer()
             for x in blobs:
                 text = x.split()
                 docid = text.pop(0)
                 imgid = text.pop(0)
-                text = ' '.join(text).lower()
+                text = ' '.join(text).lower().translate(dict.fromkeys(map(ord, u".,:;\"'")))
                 stop = stopwords.words('english')
                 text = [word for word in text.split() if word not in stop]
-                text[-1] = text[-1][:-1]
                 tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(text)))
                 self.corpus[docid] = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]                
                 self.images[imgid] = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]                
@@ -80,12 +80,16 @@ class QueryParser:
             for x in blobs:
                 text = x.split('\t')[-1].lower()
                 truth = x.split('\t')[-2]
+                '''
                 stop = stopwords.words('english')
                 text = [word for word in text.split() if word not in stop]
                 text[-1] = text[-1][:-1]
                 tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(text)))
                 query = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]
-                o.write("%s %s\n" % (truth, ' '.join(query)))
+                ''' 
+                stemmer = SnowballStemmer("english", ignore_stopwords=True)
+                text = [stemmer.stem(word) for word in text.split()]
+                o.write("%s %s\n" % (truth, ' '.join(text)))
             
   
     def parseComplete(self):

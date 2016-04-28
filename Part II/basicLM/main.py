@@ -8,7 +8,7 @@ import nltk
 from nltk.stem.wordnet import WordNetLemmatizer
 
 def main():
-    qpi = QueryParser(filename='./queries_val2_parsed.txt')
+    qpi = QueryParser(filename='./queries_val_parsed.txt')
     cpi = CorpusParser(filename='./target_collection_parsed.txt')
     qp = QueryParser(filename='./queries.txt')
     cp = CorpusParser(filename='./corpus.txt')
@@ -48,7 +48,7 @@ def main():
            if imgid == truth:
                correct +=1
         precision = round(correct/cut,10)
-        recall = round(correct/(cut + total - correct), 10)
+        recall = round(correct/total, 10)
         precrec.append((precision, recall))
     totalprec = 0
     totalrec = 0
