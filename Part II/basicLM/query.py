@@ -16,9 +16,8 @@ class QueryProcessor:
         self.ft = ft
         self.score_function = score_function
 
-    def run(self):
+    def run(self, smoothing):
         results = []
-        mu = 10
         qid = 0
         for query in self.queries:
             if self.score_function == 'BM25':
@@ -26,10 +25,10 @@ class QueryProcessor:
             elif self.score_function == 'Query Likelihood':
                 print('running query %d' % qid)
                 qid += 1
-                results.append(self.run_query_likelihood(query, mu))
+                results.append(self.run_query_likelihood(query, smoothing))
         return results
 
-    def run_query_likelihood(self, query, mu):
+    def run_query_likelihood(self, query, smoothing):
         print('query:', query)
         mu_result = OrderedDict() # collect document rankings for this value of mu
         for term in query:
@@ -46,7 +45,7 @@ class QueryProcessor:
                         #score documents that contain term
                         for docid, f in freq:
                            docs.add(docid)
-                           score = score_query_likelihood(f=float(f), mu=mu, c=self.ft.get_frequency(term), C=len(self.ft), D=len(self.dlt))
+                           score = score_query_likelihood(f=float(f), mu=smoothing, c=self.ft.get_frequency(term), C=len(self.ft), D=len(self.dlt))
                            if docid in mu_result:
                                mu_result[docid] += score
                            else:
@@ -55,7 +54,7 @@ class QueryProcessor:
                         #score documents that don't contain term
                         tmp = [str(x) for x in range(len(self.dlt))]
                         s = set(tmp).difference(docs)
-                        score = score_query_likelihood(f=0, mu=mu, c=self.ft.get_frequency(term), C=len(self.ft), D=len(self.dlt))
+                        score = score_query_likelihood(f=0, mu=smoothing, c=self.ft.get_frequency(term), C=len(self.ft), D=len(self.dlt))
                         for docid in s:
                             if docid in mu_result:
                                 mu_result[docid] += score
