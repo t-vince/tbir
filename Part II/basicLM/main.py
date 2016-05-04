@@ -20,7 +20,7 @@ def main():
     qpi.readparsed()
     queries = qpi.get_queries()
     corpus = cpi.get_corpus()
-    smoothparams = [0,1,10,50,100,200,500,1000]
+    smoothparams = [10]
 
     #step 1: build inverted index
     print('building data structures')
@@ -46,16 +46,17 @@ def main():
             print(truth)
             total = images.count(truth)
             print(total)
+            precision = 0
             for ind, ranking in cutoff:
                 imgid = images[int(ranking[0])]
                 if imgid == truth:
                     correct +=1
-            precision = round(correct/cut,10)
+                    precision += round(correct/(ind+1),10)
             recall = round(correct/total, 10)
-            precrec.append((precision, recall))
+            precrec.append((round(precision/cut), recall))
         totalprec = 0
         totalrec = 0
-        filename = './imageresults/results_%d.txt' % smoothing'
+        filename = './imageresults/results_%d.txt' % smoothing
         with open(filename, 'w') as f:
             for prec, rec in precrec:
                 f.write(str(prec) + " " + str(rec) + "\n")
