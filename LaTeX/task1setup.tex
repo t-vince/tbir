@@ -9,7 +9,8 @@ We use freely available pretrained vector models for GloVe \cite{glovedata} and 
 \newline
 To run the different analogy arithmetic models (see next paragraph), we introduce a separate function in our code for each model. These functions then use the Gensim library for Python \cite{gensim} to calculate the different vector distances.
 \newline
-\textbf{An analogy arithmetic function}is used to calculate how close the input vector is to another vector in order to choose the most similar result. To calculate the angle between high dimensional vectors, Mikolov et al. \cite{mikolov} proposed using cosine similarity as explained in equation \ref{cosinesimilarity}. 
+\newline
+\textbf{An analogy arithmetic function} is used to calculate how close the input vector is to another vector in order to choose the most similar result. To calculate the angle between high dimensional vectors, Mikolov et al. \cite{mikolov} proposed using cosine similarity as explained in equation \ref{cosinesimilarity}. 
 \begin{equation}
 \begin{split}
 \label{cosinesimilarity}
