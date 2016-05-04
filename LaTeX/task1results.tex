@@ -1,5 +1,9 @@
+
+In the tables \ref{glove-multiplication} the results of the GloVe method combined with the multiplication method is shown. The results for the addition method are displayed in the tables \ref{glove-addition}. The results of multiplication- and addition model of Word2Vec can respectively be found in table \ref{table:word2vec_multiplication} and \ref{table:word2vec_addition}. A graph that visualizes the results next to each other is presented in figure \ref{fig:gloveword2veccomparison}.
+\paragraph{}
+No matter the dimension, GloVe always had the same amount of skipped words (all words) within a category. So we will not show the category results for these.
 \label{sec:tabellen}
-\begin{table}[h!]
+\begin{table}[H]
 	\centering
 	\subfloat[GloVe50d multiplication model (ran for 3 min)  \label{table:glove150d_addition}]{
 		\begin{tabular}{| l | c | r}
@@ -67,9 +71,8 @@
 	{Resultaten GloVe multiplication models}
 	\label{glove-multiplication}
 \end{table}
-No matter the dimension, GloVe always had the same amount of skipped words (all words) within a category. So we will not show the category results for these.
 
-\begin{table}[h!]
+\begin{table}[H]
 	\centering
 	\subfloat[GloVe50d addition model (ran for 3 min) \label{table:glove50d_addition}]{
 		\begin{tabular}{| l | c | r}
@@ -133,13 +136,12 @@ No matter the dimension, GloVe always had the same amount of skipped words (all 
 			\textbf{Total no skipped}	& 0.63849 \\ \hline
 		\end{tabular}
 	}
-	\caption[Resultaten GloVe addition models]
-	{Resultaten GloVe addition models}
+	\caption{Resuls GloVe addition models}
 	\label{glove-addition}
 \end{table}
 
 
-\begin{table}[h!]
+\begin{table}[H]
 	\centering
 	\subfloat[Word2Vec multiplication model (ran for 3h25)  \label{table:word2vec_multiplication}]{
 		\begin{tabular}{| l | c | r}
@@ -184,12 +186,13 @@ No matter the dimension, GloVe always had the same amount of skipped words (all 
 			\textbf{Total}				& 0.73588 \\ \hline
 		\end{tabular}
 	}
-	\caption[Resultaten Word2Vec models]
-	{Resultaten Word2Vec}
+	\caption{Results of the Word2Vec models}
 	\label{word2Vec}
 \end{table}
 
-\begin{figure}[ht!]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=130mm]{images/chart1.png}
+	\caption{A comparison between the GloVe and Word2Vec results for the multiplication and addition method.}
+	\label{fig:gloveword2veccomparison}
 \end{figure}

@@ -2,7 +2,10 @@ We compare the use of different word embeddings (GloVe and Word2Vec) towards dif
 \paragraph{}
 We coded our solution in Python (version 2.7) using IPython Notebook. All experiments were run on a notebook with 8GB RAM memory, Intel(R) CORE\textsuperscript{TM}i7-3610QM CPU, SSD hard disk and a Windows 7 Operating System.
 \paragraph{}
+We use freely available pretrained vector models for GloVe \cite{glovedata} and Word2Vec \cite{word2vecdata}. The GloVe models are almost the same format as the Word2Vec models. The only difference is that Word2Vec had a header with the dimensions. Once added, the GloVe model can also run with the default Gensim operations for Word2Vec.
+\paragraph{}
 To run the different analogy arithmetic models (see next paragraph), we introduce a separate function in our code for each model. These functions then use the Gensim library for Python \cite{gensim} to calculate the different vector distances.
+
 \paragraph{An analogy arithmetic function} 
 is used to calculate how close the input vector is to another vector in order to choose the most similar result. To calculate the angle between high dimensional vectors, Mikolov et al. \cite{mikolov} proposed using cosine similarity as explained in equation \ref{cosinesimilarity}. 
 \begin{equation}
@@ -12,7 +15,7 @@ similarity(v1, v2) &= cos(\theta) \\&= \dfrac{v1 \cdot v2}{||v1|| \cdot ||v2||} 
 \end{split}
 \end{equation}
 
-We consider 2 analogy arithmetic models. The first is named the "Addition" method and is simply maximizing the cosine similarity between the result $d_w$ and the vector equation $c-a+b$ where the variables $a b c$ have the same meaning as mentioned in the warm-up exercise. In the equation \ref{additionmethod} we also introduce $V$ as the whole vocabulary and $d'_w$ as a chosen element from $V$.
+We consider 2 analogy arithmetic models. The first is named the \textbf{Addition method} and is simply maximizing the cosine similarity between the result $d_w$ and the vector equation $c-a+b$ where the variables $a b c$ have the same meaning as mentioned in the warm-up exercise. This method actually looks for words similar to c and b and not to a. In the equation \ref{additionmethod} we also introduce $V$ as the whole vocabulary and $d'_w$ as a chosen element from $V$.
 
 \begin{equation}
 \begin{split}
@@ -22,15 +25,14 @@ d_w &= argmax_{d'_w \in V}(similarity(d'_w, v) )
 \end{split}
 \end{equation}
 
-The other method was referred to the "Multiplication" method \cite{leviandgoldberg}. [TODO explain this] 
+The other method was referred to as the \textbf{Multiplication method} \cite{leviandgoldberg}. Because the Addition method risks being dominated by one large term, therefore the authors proposed that instead of adding the similarities, they could be multiplied as described in equation \ref{multiplicationmethod}.
+
 \begin{equation}
 \begin{split}
-\label{additionmethod}
+\label{multiplicationmethod}
 d_w &= argmax_{d'_w \in V}(\dfrac{similarity(d'_w, c) similarity(d'_w, b)}{similarity(d'_w, a) + \epsilon} )
 \end{split}
 \end{equation}
 
-\paragraph{}
-We use freely available pretrained vector models for GloVe \cite{glovedata} and Word2Vec \cite{word2vecdata}. The GloVe models are almost the same format as the Word2Vec models. The only difference is that Word2Vec had a header with the dimensions. Once added, the GloVe model can also run with the default Gensim operations for Word2Vec.
-\paragraph{}
-If a word does not occur within the pretrained vector model, we generated two different recall numbers: One where the missing word is considered a failed for the analogy and one where the missing word is just ignored. We could also have done a third option, were we use the nearest word in the vector model instead of the missing word. However, we did not do this because this would take a lot more computing power and (as seen in the results below) we're not sure whether it would have made a difference.
+\paragraph{Two different recall numbers }
+are generated if a word does not occur within the pretrained vector model: One where the \textbf{missing word is considered a failure} for the analogy and one where the \textbf{missing word is just ignored}. We could also have done a third option, were we use the nearest word in the vector model instead of the missing word. However, we did not do this because this would take a lot more computing power and (as seen in the results below) we're not sure whether it would have made a difference.

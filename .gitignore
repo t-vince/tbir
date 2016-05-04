@@ -70,3 +70,5 @@ Part II/basicLM/.spyderproject
 *.spyderworkspace
 *.spyderproject
 *.0
+*.bbl
+*.blg
