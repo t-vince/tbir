@@ -1,5 +1,5 @@
 
-We coded our solution in Python (version 2.7) using IPython Notebook. All experiments were run on a notebook with 8GB RAM memory, Intel(R) CORE\textsuperscript{TM}i7-3610QM CPU, SSD hard disk and a Windows 7 Operating System.
+We coded our solution in Python (version 2.7) using Jupyter Notebook. All experiments were run on a notebook with 8GB RAM memory, Intel(R) CORE\textsuperscript{TM}i7-3610QM CPU, SSD hard disk and a Windows 7 Operating System.
 
 \paragraph{The data}
 we received contains the following documents:
@@ -7,3 +7,8 @@ we received contains the following documents:
 	\item[A. target\_collection] A table representing 17,784 images with as columns a unique numerical ID, an ID that corresponds to the actual image file and a description of the image. This data is used to train our model.
 	\item[B. queries\_val] A similar table as the \textit{target\_collection} but it represents 1000 different images. This table will be used to test the accuracy of our trained model.
 \end{description}
+
+\paragraph{Preprosessing}
+Because comparison of words happen on the exact format of the words, we decided to do some preprocessing to make sure every word is in the same base form. Both the target collection as the queries were lemmatized. And, because we find that some words carry more meaning than other words, we also decided to remove the punctuation using regular expressions and the stopwords (e.g. the, it, to, ...) using the freely available stopwords list 2 (stopwordlist2 - http://www.lextek.com/manuals/onix/stopwords2.html).
+
+Furthermore, we noticed that all queries and the target data are written in British English. Because we use the pretrained Google News vector model, which only contains American English words, a lot of remained not found. So we did a hardcoded translation of the most frequent missing words - due to the lack of a good library - for the embedding results.
