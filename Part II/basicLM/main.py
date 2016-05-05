@@ -20,7 +20,7 @@ def main():
     qpi.readparsed()
     queries = qpi.get_queries()
     corpus = cpi.get_corpus()
-    smoothparams = [10]
+    smoothparams = [100,200]
 
     #step 1: build inverted index
     print('building data structures')
@@ -53,7 +53,7 @@ def main():
                     correct +=1
                     precision += round(correct/(ind+1),10)
             recall = round(correct/total, 10)
-            precrec.append((round(precision/cut), recall))
+            precrec.append((round(precision/cut, 10), recall))
         totalprec = 0
         totalrec = 0
         filename = './imageresults/results_%d.txt' % smoothing
