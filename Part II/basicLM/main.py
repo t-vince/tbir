@@ -22,7 +22,7 @@ def main():
     qpi.readparsed()
     queries = qpi.get_queries()
     corpus = cpi.get_corpus()
-    smoothparams = [50]
+    smoothparams = [100]
 
     #step 1: build inverted index
     print('building data structures')

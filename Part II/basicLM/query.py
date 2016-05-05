@@ -104,14 +104,13 @@ class QueryProcessor:
             tmp = [str(x) for x in range(len(self.dlt))]
             s = set(tmp).difference(docs)
             #score = score_query_likelihood(f=0, mu=smoothing, c=self.ft.get_frequency(term), C=len(self.ft), D=len(self.dlt))
-            score = score_query_likelihood.get_score(f)
+            score = score_query_likelihood.get_score(0)
                                        
             for docid in s:
                 if docid in mu_result:
                     mu_result[docid] += score
                 else:
                     mu_result[docid] = score
-            break
         return mu_result
 
 '''
