@@ -5,6 +5,8 @@ from invdx import build_data_structures
 from rank import *
 from collections import OrderedDict
 import operator
+import time
+
 
 
 class QueryProcessor:
@@ -15,30 +17,62 @@ class QueryProcessor:
         self.dlt = dlt
         self.ft = ft
         self.score_function = score_function
+        self.qid = 0;
+        self.idx = []
+        with open(self.idx_file, buffering=1000000000) as idx:
+            for line in idx:
+                self.idx.append(line);
 
-    def run(self, smoothing):
+    def run(self, smoothing, cut):
         results = []
-        qid = 0
+        self.qid = 0
+        
         for query in self.queries:
+            start = time.time()
             if self.score_function == 'BM25':
                 results.append(self.run_BM25(query))
             elif self.score_function == 'Query Likelihood':
                 print('running query %d' % qid)
                 qid += 1
-                results.append(self.run_query_likelihood(query, smoothing))
+                newResults = self.run_query_likelihood(query, smoothing)
+                
+                s = sorted([(k, v) for k, v in newResults.items()], key=operator.itemgetter(1))
+                s.reverse()
+                results.append(s[:cut])
+            end = time.time()
+            print(end - start)
         return results
+    
+    def hasNext(self):
+        return self.qid < len(self.queries)
+        
+    def runNext(self, smoothing, cut):
+        start = time.time()
+        if self.score_function == 'BM25':
+            result = self.run_BM25(query)
+        elif self.score_function == 'Query Likelihood':
+            print('running query %d' % self.qid)
+            query = self.queries[self.qid]
+            self.qid += 1
+            newResults = self.run_query_likelihood(query, smoothing)
+            
+            s = sorted([(k, v) for k, v in newResults.items()], key=operator.itemgetter(1))
+            s.reverse()
+            result = s[:cut]
+        end = time.time()
+        print(end - start)
+        return result
 
     def run_query_likelihood(self, query, smoothing):
         print('query:', query)
         mu_result = OrderedDict() # collect document rankings for this value of mu
         for term in query:
-            with open(self.idx_file, buffering=1000000000) as idx:
                 #print 'searching index'
-                for line in idx:
+                for line in self.idx:
                     tmp = line.split()
                     word = tmp.pop(0)
-                    freq = [tuple(x.split(':')) for x in tmp]
                     if term == word:
+                        freq = [tuple(x.split(':')) for x in tmp]
                         print('parsing index word:', word)
                         docs = set()
                         #print 'scoring documents'

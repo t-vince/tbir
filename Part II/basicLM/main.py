@@ -20,7 +20,7 @@ def main():
     qpi.readparsed()
     queries = qpi.get_queries()
     corpus = cpi.get_corpus()
-    smoothparams = [100,200]
+    smoothparams = [300,400,800]
 
     #step 1: build inverted index
     print('building data structures')
@@ -33,21 +33,21 @@ def main():
     print('running queries')
     for smoothing in smoothparams:
         print('running queries with %d smoothing' % smoothing)
-        results = proc.run(smoothing)
+        cut = 1000
+        #results = proc.run(smoothing, cut)
         precrec = []
         images = cpi.get_images()
-        cut = 1000
-        for index, result in enumerate(results):
-            s = sorted([(k, v) for k, v in result.items()], key=operator.itemgetter(1))
-            s.reverse()
+        #for index, result in enumerate(results):
+        while proc.hasNext():
+            index = proc.qid
+            result = proc.runNext(smoothing, cut)
             correct = 0
-            cutoff = enumerate(s[:cut])
             truth = qpi.truths[index]
             print(truth)
             total = images.count(truth)
             print(total)
             precision = 0
-            for ind, ranking in cutoff:
+            for ind, ranking in enumerate(result):
                 imgid = images[int(ranking[0])]
                 if imgid == truth:
                     correct +=1
@@ -64,8 +64,8 @@ def main():
                 totalrec += rec
         filename = './imageresults/run_%d.txt' % smoothing
         with open(filename, 'w') as f:
-            f.write(str(totalprec/len(results))+"\n")
-            f.write(str(totalrec/len(results)))
+            f.write(str(totalprec/len(queries))+"\n")
+            f.write(str(totalrec/len(queries)))
 
 
 def make_dir():
