@@ -18,10 +18,15 @@ class QueryProcessor:
         self.ft = ft
         self.score_function = score_function
         self.qid = 0;
-        self.idx = []
+        self.idx = {}
         with open(self.idx_file, buffering=1000000000) as idx:
             for line in idx:
-                self.idx.append(line);
+                tmp = line.split()
+                word = tmp.pop(0)
+                freq = [tuple(x.split(':')) for x in tmp]
+                self.idx[word] = freq
+        
+        
 
     def run(self, smoothing, cut):
         results = []
@@ -62,39 +67,51 @@ class QueryProcessor:
         end = time.time()
         print(end - start)
         return result
+        
+    def restart(self):
+        self.qid = 0
+        
+    def getCurrentQueryId(self):
+        return self.qid
 
     def run_query_likelihood(self, query, smoothing):
         print('query:', query)
         mu_result = OrderedDict() # collect document rankings for this value of mu
         for term in query:
-                #print 'searching index'
-                for line in self.idx:
-                    tmp = line.split()
-                    word = tmp.pop(0)
-                    if term == word:
-                        freq = [tuple(x.split(':')) for x in tmp]
-                        print('parsing index word:', word)
-                        docs = set()
-                        #print 'scoring documents'
-                        #score documents that contain term
-                        for docid, f in freq:
-                           docs.add(docid)
-                           score = score_query_likelihood(f=float(f), mu=smoothing, c=self.ft.get_frequency(term), C=len(self.ft), D=len(self.dlt))
-                           if docid in mu_result:
-                               mu_result[docid] += score
-                           else:
-                               mu_result[docid] = score
-                        #print 'scoring other documents'
-                        #score documents that don't contain term
-                        tmp = [str(x) for x in range(len(self.dlt))]
-                        s = set(tmp).difference(docs)
-                        score = score_query_likelihood(f=0, mu=smoothing, c=self.ft.get_frequency(term), C=len(self.ft), D=len(self.dlt))
-                        for docid in s:
-                            if docid in mu_result:
-                                mu_result[docid] += score
-                            else:
-                                mu_result[docid] = score
-                        break
+            #print 'searching index'
+            if not term in self.idx:
+                continue
+            
+            freq = self.idx[term]
+            termFreq = self.ft.get_frequency(term)
+            score_query_likelihood = QueryLikelihood(mu=smoothing, c=termFreq, C=len(self.ft), D=len(self.dlt))
+            
+            print('parsing index word:', term)
+            docs = set()
+            #print 'scoring documents'
+            #score documents that contain term
+            for docid, f in freq:
+               docs.add(docid)
+               #score = score_query_likelihood(f=float(f), mu=smoothing, c=termFreq, C=len(self.ft), D=len(self.dlt))
+               score = score_query_likelihood.get_score(f)
+               
+               if docid in mu_result:
+                   mu_result[docid] += score
+               else:
+                   mu_result[docid] = score
+            #print 'scoring other documents'
+            #score documents that don't contain term
+            tmp = [str(x) for x in range(len(self.dlt))]
+            s = set(tmp).difference(docs)
+            #score = score_query_likelihood(f=0, mu=smoothing, c=self.ft.get_frequency(term), C=len(self.ft), D=len(self.dlt))
+            score = score_query_likelihood.get_score(f)
+                                       
+            for docid in s:
+                if docid in mu_result:
+                    mu_result[docid] += score
+                else:
+                    mu_result[docid] = score
+            break
         return mu_result
 
 '''

@@ -29,3 +29,13 @@ def score_query_likelihood(f, mu, c, C, D):
 	denominator = float(D) + float(mu)
 	return numerator/denominator
  
+
+
+class QueryLikelihood:
+    def __init__(self, mu, c, C, D):
+        self.denominator = float(D) + float(mu)
+        self.numeratorPart = float(mu) * (float(c) / float(C))
+    def get_score(self, f):
+        numerator = float(f) + self.numeratorPart
+        return numerator/self.denominator
+ 

@@ -5,9 +5,11 @@ import os
 import subprocess
 import sys
 import nltk
+import time
 from nltk.stem.wordnet import WordNetLemmatizer
 
 def main():
+    start = time.time()
     qpi = QueryParser(filename='./queries_val_parsed.txt')
     cpi = CorpusParser(filename='./target_collection_parsed.txt')
     qp = QueryParser(filename='./queries.txt')
@@ -20,7 +22,7 @@ def main():
     qpi.readparsed()
     queries = qpi.get_queries()
     corpus = cpi.get_corpus()
-    smoothparams = [300,400,800]
+    smoothparams = [50]
 
     #step 1: build inverted index
     print('building data structures')
@@ -32,6 +34,7 @@ def main():
     proc = QueryProcessor(queries, idx = "./imagedefault.idx", dlt=dlt, ft=ft, score_function='Query Likelihood')
     print('running queries')
     for smoothing in smoothparams:
+        proc.restart() # start over from the first query
         print('running queries with %d smoothing' % smoothing)
         cut = 1000
         #results = proc.run(smoothing, cut)
@@ -39,7 +42,7 @@ def main():
         images = cpi.get_images()
         #for index, result in enumerate(results):
         while proc.hasNext():
-            index = proc.qid
+            index = proc.getCurrentQueryId()
             result = proc.runNext(smoothing, cut)
             correct = 0
             truth = qpi.truths[index]
@@ -66,6 +69,8 @@ def main():
         with open(filename, 'w') as f:
             f.write(str(totalprec/len(queries))+"\n")
             f.write(str(totalrec/len(queries)))
+    end = time.time()
+    print(end - start)
 
 
 def make_dir():
