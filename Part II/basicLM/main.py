@@ -17,7 +17,7 @@ def main():
     qpi.readparsed()
     queries = qpi.get_queries()
     corpus = cpi.get_corpus()
-    smoothparams = [100]
+    smoothparams = [0,1,10,20,50,80,100,200,300,400,500,750,1000]
 
     #step 1: build inverted index
     print('building data structures')
@@ -58,8 +58,8 @@ def main():
             for query in queryprecrec:
                 cutprecision += query[cutc][0]
                 cutrecall += query[cutc][1]
-            finalprec = round(cutprecision/cut, 10) 
-            finalrec = round(cutrecall/cut, 10) 
+            finalprec = round(cutprecision/len(queries), 10) 
+            finalrec = round(cutrecall/len(queries), 10) 
             precrec.append((finalprec, finalrec))
         filename = './imageresults/Yresults_%d.txt' % smoothing
         with open(filename, 'w') as f:
