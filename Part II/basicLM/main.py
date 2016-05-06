@@ -1,19 +1,14 @@
 from parse import *
 from query import *
-import operator
 import os
-import subprocess
-import sys
-import nltk
 import time
-from nltk.stem.wordnet import WordNetLemmatizer
+from invdx import *
+import sys
 
 def main():
     start = time.time()
     qpi = QueryParser(filename='./queries_val_parsed.txt')
     cpi = CorpusParser(filename='./target_collection_parsed.txt')
-    qp = QueryParser(filename='./queries.txt')
-    cp = CorpusParser(filename='./corpus.txt')
     #cp.parse()
     print('parsing corpus')
     cpi.readparsed()
@@ -27,50 +22,49 @@ def main():
     #step 1: build inverted index
     print('building data structures')
     idx, ft, dlt = build_data_structures(corpus)
-    #idx.to_db()
-    idx.write("./imagedefault.idx")
 
     #step 2: run queries against inverted index file
     proc = QueryProcessor(queries, idx = "./imagedefault.idx", dlt=dlt, ft=ft, score_function='Query Likelihood')
-    print('running queries')
-    for smoothing in smoothparams:
+    print('running queries')  
+    cut = 1000
+    for smoothing in smoothparams:        
         proc.restart() # start over from the first query
-        print('running queries with %d smoothing' % smoothing)
-        cut = 1000
+        print("running queries with %d smoothing" % smoothing)
         #results = proc.run(smoothing, cut)
-        precrec = []
+        queryprecrec = []
         images = cpi.get_images()
         #for index, result in enumerate(results):
         while proc.hasNext():
             index = proc.getCurrentQueryId()
+            print("running query %d" % index)
             result = proc.runNext(smoothing, cut)
             correct = 0
             truth = qpi.truths[index]
-            print(truth)
-            total = images.count(truth)
-            print(total)
-            precision = 0
-            for ind, ranking in enumerate(result):
-                imgid = images[int(ranking[0])]
+            total = images.count(truth) 
+            cutprecrec = []
+            singleprecision = 0 
+            for c in range(0, cut):
+                imgid = images[int(result[c][0])]
                 if imgid == truth:
                     correct +=1
-                    precision += round(correct/(ind+1),10)
-            recall = round(correct/total, 10)
-            precrec.append((round(precision/cut, 10), recall))
-        totalprec = 0
-        totalrec = 0
-        filename = './imageresults/results_%d.txt' % smoothing
+                    singleprecision += correct/float(c+1)
+                singlerecall = round(correct/total, 10)
+                cutprecrec.append((round(singleprecision/cut, 10), singlerecall))            
+            queryprecrec.append(cutprecrec)
+        precrec = []
+        for cutc in range(cut):
+            cutprecision = 0
+            cutrecall = 0
+            for query in queryprecrec:
+                cutprecision += query[cutc][0]
+                cutrecall += query[cutc][1]
+            finalprec = round(cutprecision/cut, 10) 
+            finalrec = round(cutrecall/cut, 10) 
+            precrec.append((finalprec, finalrec))
+        filename = './imageresults/Yresults_%d.txt' % smoothing
         with open(filename, 'w') as f:
             for prec, rec in precrec:
                 f.write(str(prec) + " " + str(rec) + "\n")
-                totalprec += prec
-                totalrec += rec
-        filename = './imageresults/run_%d.txt' % smoothing
-        with open(filename, 'w') as f:
-            f.write(str(totalprec/len(queries))+"\n")
-            f.write(str(totalrec/len(queries)))
-    end = time.time()
-    print(end - start)
 
 
 def make_dir():

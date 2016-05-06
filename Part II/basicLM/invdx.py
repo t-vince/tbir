@@ -2,11 +2,6 @@
 # An inverted index
 from collections import OrderedDict
 from json import *
-from time import time
-import sys
-
-__author__ = 'Nick Hirakawa'
-
 
 class InvertedIndex:
 
