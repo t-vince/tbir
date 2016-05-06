@@ -6,9 +6,40 @@ import nltk
 from nltk.corpus import wordnet
 from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.stem.snowball import SnowballStemmer
 from textblob import TextBlob
 
+def clean_input(text):
+    # lowecase and remove linebreaks
+    text = text.lower().rstrip()
+    # Remove punctuation
+    text = re.sub('[!@#$:;%&?,_\.\'\`\"\\\/\(\)\[\]]', '', text)
+    text = re.sub('[\-]+', '-', text)
+    # Remove sole numbers, dashes or extra spaces
+    text = re.sub('[\s][\-]+[\s]', '', text)
+    text = re.sub('[0-9]+', '', text)
+    text = re.sub('[\s]+', ' ', text)
+    # British to American English - at this moment still hardcoded due to lack of library
+    text = text.replace('grey', 'gray')
+    text = text.replace('colour', 'color')
+    text = text.replace('tyre', 'tire')
+    text = text.replace('centre', 'center')
+    text = text.replace('theatre', 'theater')
+    text = text.replace('jewellery','jewelry')
+    text = text.replace('aeroplane', 'plane')
+    text = text.replace('harbour', 'harbor')
+    text = text.replace('moustache','mustache')
+    text = text.replace(' axe', ' hatchet')
+    text = text.replace('armour', 'armor')
+    text = text.replace('stylised', 'stylized')
+    text = text.replace('organise', 'organize')
+    text = text.replace('plough', 'plow')
+    text = text.replace('neighbourhood', 'neighborhood')
+    text = text.replace('vapour', 'vapor')
+    # some manual fixes of lemmatizing
+    text = text.replace('watersid ', 'waterside ')
+    text = text.replace('figur ', 'figure ')
+    text = text.replace(' graz ', ' graze ')
+    return text
 
 class CorpusParser:
 
@@ -27,7 +58,7 @@ class CorpusParser:
                 text = x.split()
                 docid = text.pop(0)
                 imgid = text.pop(0)
-                text = ' '.join(text).lower().translate(dict.fromkeys(map(ord, u".,:;\"'")))
+                text = clean_input(text)
                 stop = stopwords.words('english')
                 text = [word for word in text.split() if word not in stop and not word == '.']
                 tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(text)))
@@ -36,19 +67,20 @@ class CorpusParser:
                 
     def parseComplete(self):
         with open(self.filename) as f:
-            s = ''.join(f.readlines())
+            s = ''.join(f.readlines()[1:])
             blobs = s.split('\n')
             lmtzr = WordNetLemmatizer()
-            for x in blobs:
+            for x in blobs[:-1]:
                 text = x.split()
-                docid = text.pop(0)
+                print(text)
+                docid = int(text.pop(0))
                 imgid = text.pop(0)
-                text = ' '.join(text).lower().translate(dict.fromkeys(map(ord, u".,:;\"'")))
+                text = clean_input(' '.join(text))
                 stop = stopwords.words('english')
                 text = [word for word in text.split() if word not in stop]
                 tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(text)))
                 self.corpus[docid] = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]                
-                self.images[imgid] = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]                
+                self.images.append(imgid)               
                     
     def readparsed(self):
           with open(self.filename) as f:
@@ -72,38 +104,41 @@ class QueryParser:
         self.filename = filename
         self.queries = []
         self.truths = []
+        self.ids = []
 
     def parse(self, output):
         with open(self.filename) as f, open(output, 'w+') as o:
             blobs = ''.join(f.readlines()).split('\n')
             lmtzr = WordNetLemmatizer()
             for x in blobs:
+                sent_id = x.split('t')[0]
                 text = x.split('\t')[-1].lower()
                 truth = x.split('\t')[-2]
-                '''
                 stop = stopwords.words('english')
                 text = [word for word in text.split() if word not in stop]
                 text[-1] = text[-1][:-1]
                 tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(text)))
-                query = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]
-                ''' 
-                stemmer = SnowballStemmer("english", ignore_stopwords=True)
-                text = [stemmer.stem(word) for word in text.split()]
+                text = [lmtzr.lemmatize(text[position], WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(text))]
                 o.write("%s %s\n" % (truth, ' '.join(text)))
             
   
-    def parseComplete(self):
+    def parseComplete(self, truth):
         with open(self.filename) as f:
-            lines = ''.join(f.readlines())
+            lines = f.readlines()[1:]
+            lines = ''.join(lines)
             lmtzr = WordNetLemmatizer()
             queries = [y[-1] for x in lines.split('\n') for y in [x.split('\t')]]
             for query in queries:
-                query = query.lower()
-                stop = stopwords.words('english')                
+                stop = stopwords.words('english')   
+                query = clean_input(query)
                 query = [word for word in query.split() if word not in stop]
-                tokenized = nltk.pos_tag(nltk.word_tokenize(query))
+                tokenized = nltk.pos_tag(nltk.word_tokenize(' '.join(query)))
                 self.queries.append([lmtzr.lemmatize(WordParser.parseword(query[position]), WordParser.get_wordnet_pos(tokenized[position][1])) for position in range(0, len(query))])
-            self.truths = [y[-2] for x in lines.split('\n') for y in [x.split('\t')]]
+            self.ids = [y[0] for x in lines.split('\n') for y in [x.split('\t')]]
+            if truth:
+                self.truths = [y[-2] for x in lines.split('\n') for y in [x.split('\t')]]
+            else:
+                self.truths = []
             
     def readparsed(self):
         with open(self.filename) as f:
@@ -113,6 +148,9 @@ class QueryParser:
             
     def get_queries(self):
         return self.queries
+        
+    def get_ids(self):
+        return self.ids
 
 class WordParser:
     
