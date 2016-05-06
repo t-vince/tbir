@@ -72,3 +72,6 @@ Part II/basicLM/.spyderproject
 *.0
 *.bbl
 *.blg
+Part II/data/glove.6B.50d.txt
+Part II/data/glove.6B.50d.word2vec.txt
+Part II/data/glove.6B.zip
