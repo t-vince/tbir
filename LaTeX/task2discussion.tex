@@ -1,12 +1,17 @@
-\subsubsection{Unigram Language Model}
+First of all, we can see that the recall increases at we increase the number of top N queries. This is logical because the recall gives ratio between found and to-be-found. So if we would cut off at the maximum amount of documents, the recall would be 100%.
+\newline
+Secondly we see that the precision decreases as the amount of documents increases. 
 
+\subsubsection{Unigram Language Model}
+The simple Unigram Model is the simpelest of all methods that we attempted. It is also the fastest of all methods that we attempted. However, this speed comes at an accuracy cost.
+The Simple Language Model does not account for words with a similar meaning, something the word embedding does account for and we can see that the word embedding is superior in accuracy.
+[More explanation about the charts]
 
 \subsubsection{Wordembedding}
 Because the location of the word in the model gives semantic similarity, words with similar meanings are given similar vectors. This results in a more accurate result than the Unigram Language Model, as we can see in the results.
 Because of the limited size of the documents, a lot of similar words are still found. If the descriptions would be longer, a more accurate result could be found and the overall accuracy would increase. But with the current length of the queries and the target collection, we think we got acceptable results.
-
-To calculate similarity, we sum the different vectors. The main problem with this is that longer descriptions get a more accurate result if they contain the right words.  [I think]
-A more intelligent way to do this would be [I have no idea]
-
+\newline
+\newline
+To calculate similarity, we sum the different vectors. The main problem with this approach is that it introduces a lot of noise. Every word contains a similar value. We have already attempted to reduce this problem by removing the stopwords (which increased our results), but this is not a total solution. A more intelligent method would be using weighted sum based on other information. (e.g. using Term Frequency Inverse Document Frequency (TF-IDF) to weigh terms based on their frequency) However, we have not attempted to add TF-IDF for a weighted sum (as it would increase the computational need) and can therefore only assume that it would further increase the accuracy.
 
 \subsubsection{LSI}

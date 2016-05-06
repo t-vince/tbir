@@ -3,14 +3,25 @@
 [recall and MAP value for 10, 100, 250, 500 and 1000]
 
 \subsubsection{Wordembedding}
-[embedding image]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=130mm]{images/precision-recall_embedding.png}
+	\caption{The precision-Recall chart for word embedding.}
+	\label{fig:embeddingpresicionrecall}
+\end{figure}
 
-	 Recall			MAP
-10	 0,261927341	0,361174643
-100  0,53963469		0,141084594
-250  0,651550914	0,08350947
-500  0,73130873		0,053771223
-1000 0,807241602	0,033591179
-
+\begin{table}[H]
+	\centering
+    \begin{tabular}{| c | c | c |}
+        \hline
+        \textbf{\#top queries} & \textbf{Recall} & \textbf{MAP}\\ \hline
+        10   & 0,261927341  & 0,361174643 \\
+        100  & 0,53963469   & 0,141084594 \\
+        250  & 0,651550914  & 0,08350947  \\
+        500  & 0,73130873   & 0,053771223 \\
+        1000 & 0,807241602  & 0,033591179 \\
+        \hline
+    \end{tabular}
+\end{table}
 
 \subsubsection{LSI}
