@@ -9,27 +9,42 @@ import time
 from nltk.stem.wordnet import WordNetLemmatizer
 
 def main():
-    start = time.time()
-    qpi = QueryParser(filename='./queries_val_parsed.txt')
-    cpi = CorpusParser(filename='./target_collection_parsed.txt')
-    qp = QueryParser(filename='./queries.txt')
-    cp = CorpusParser(filename='./corpus.txt')
-    #cp.parse()
+    qpi = QueryParser(filename='./queries_val.txt')
+    cpi = CorpusParser(filename='./target_collection.txt')
     print('parsing corpus')
-    cpi.readparsed()
-    #qp.parse()
+    cpi.parseComplete()
     print('parsing queries')
-    qpi.readparsed()
+    qpi.parseComplete()
     queries = qpi.get_queries()
+    queryids = qpi.get_ids()
     corpus = cpi.get_corpus()
     smoothparams = [100]
 
-    #step 1: build inverted index
     print('building data structures')
     idx, ft, dlt = build_data_structures(corpus)
-    #idx.to_db()
     idx.write("./imagedefault.idx")
+    proc = QueryProcessor(queries, idx = "./imagedefault.idx", dlt=dlt, ft=ft, score_function='Query Likelihood')
+    smoothparams = [0,1,10,20,50,80,100,200,300,400,500,750,1000]
 
+    print('running queries')  
+    cut = 1000
+    file = './finalresults.txt'
+    runmodel(file, proc, cut, queryids)
+
+
+def runmodel(file, proc, cut, ids):
+    smoothing = 10
+    with open(file, 'w+') as f:
+        proc.restart()
+        while proc.hasNext():
+            index = proc.getCurrentQueryId()
+            result = proc.runNext(smoothing, cut)
+            for idx, ranking in result:
+                f.write(str(ids[index]) + " 0 " + str(idx) + " 0 " + str(ranking) + "\n")
+
+
+
+def runtests(file, proc, smoothparams):
     #step 2: run queries against inverted index file
     proc = QueryProcessor(queries, idx = "./imagedefault.idx", dlt=dlt, ft=ft, score_function='Query Likelihood')
     print('running queries')
@@ -90,9 +105,7 @@ def main():
                 #        totalprec += prec
                 #        totalrec += rec
                 #f.write("cut=" + str(cutIdx) + ";avg precision=" + str(totalprec/len(queries)) + ";avg recall=" + str(totalrec/len(queries)) + "\n")
-                f.write(str(cutIdx) + "\t" + str(totalprec/len(queries)) + "\t" + str(totalrec/len(queries)) + "\n")    
-    end = time.time()
-    print(end - start)
+                f.write(str(cutIdx) + "\t" + str(totalprec/len(queries)) + "\t" + str(totalrec/len(queries)) + "\n")   
 
 
 def make_dir():
