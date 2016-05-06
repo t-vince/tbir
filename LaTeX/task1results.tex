@@ -1,4 +1,4 @@
-In table \ref{glove-multiplication} the results of the GloVe method combined with the multiplication method are shown. The results for the addition method are displayed in table \ref{glove-addition}. The results of multiplication- and addition model of Word2Vec can respectively be found in table \ref{table:word2vec_multiplication} and table \ref{table:word2vec_addition}. A graph that visualizes the results next to each other is presented in figure \ref{fig:gloveword2veccomparison}.
+In table \ref{glove-multiplication} the results of the GloVe method combined with the multiplication method are shown. The results for the addition method are displayed in table \ref{table:glove100d_addition}. The results of multiplication- and addition model of Word2Vec can respectively be found in table \ref{table:word2vec_multiplication} and table \ref{table:word2vec_addition}. A graph that visualizes the results next to each other is presented in figure \ref{fig:gloveword2veccomparison}.
 \newline
 No matter the dimension, GloVe always had the same amount of skipped words (all words) within a category. So we will not show the category results for these.
 \label{sec:tabellen}
@@ -88,24 +88,6 @@ No matter the dimension, GloVe always had the same amount of skipped words (all 
 			Gram9 plural verbs 		& 0.59770 \\
 			\textbf{Total}			& 0.30778 \\
 			\textbf{Total no skipped}	& 0.62774 \\ \hline
-		\end{tabular}
-	}
-	\hfill
-	\subfloat[GloVe100d addition model (7 min runtime)   \label{table:glove100d_addition}]{
-		\begin{tabular}{| l | c | r}
-			\hline
-			\textbf{Category} &    \textbf{Recall}\\ \hline
-			Family 				& 0.81621 \\
-			Gram1 adjective to adverb 	& 0.24395 \\
-			Gram2 opposite 			& 0.20074 \\
-			Gram3 comparative 		& 0.79129 \\
-			Gram4 superlative 		& 0.54278 \\
-			Gram5 present participle	& 0.69508 \\
-			Gram7 past tense 		& 0.55448 \\
-			Gram8 plural 			& 0.71997 \\
-			Gram9 plural verbs 		& 0.58391 \\
-			\textbf{Total}			& 0.28382 \\
-			\textbf{Total no skipped}	& 0.57890 \\ \hline
 		\end{tabular}
 	}
 	\hfill
