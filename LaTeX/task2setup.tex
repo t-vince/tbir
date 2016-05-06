@@ -1,17 +1,18 @@
-We coded our solution in Python (version 2.7) using Jupyter Notebook. All experiments were run on a notebook with 8GB RAM memory, Intel(R) CORE\textsuperscript{TM}i7-3610QM CPU, SSD hard disk and a Windows 7 Operating System.
+We coded our solution in Python (version 3+) using Jupyter Notebook and regular python files. All experiments were run on a notebook with 8GB RAM memory, Intel(R) CORE\textsuperscript{TM}i7-3610QM CPU, SSD hard disk and a Windows 7 Operating System.
 
 \paragraph{The data}
 we received contains the following documents:
 \begin{description}
 	\item[A. target\_collection] A table representing 17,784 images with as columns a unique numerical ID, an ID that corresponds to the actual image file and a description of the image. This data is used to train our model.
 	\item[B. queries\_val] A similar table as the \textit{target\_collection} but it represents 1000 different images. This table will be used to test the accuracy of our trained model.
+	\item[B. test queries\_val] A collection similar to \textit{queries\_val} but it only contains 200 queries and it does not tell which image id should be returned. This file is the real test data where we can't tune our method for optimal results. The similarities will be used to rate our results to other students.
 \end{description}
 
 \paragraph{Preprosessing}
-Because comparison of words happen on the exact format of the words, we decided to do some preprocessing to make sure every word is in the same base form. Both the target collection as the queries were lemmatized. And, because we find that some words carry more meaning than other words, we also decided to remove the punctuation using regular expressions and the stopwords (e.g. the, it, to, ...) using the freely available stopwords list 2 (stopwordlist2 - http://www.lextek.com/manuals/onix/stopwords2.html).
+Because comparison of words happen on the exact format of the words, we decided to do some preprocessing to make sure every word is in the same base form. Both the target collection as the queries were lemmatized. And, because we find that some words carry more meaning than other words, we also decided to remove the punctuation using regular expressions and the stop words (e.g. the, it, to, ...) using the freely available stop words list 2 (stopwordlist2 - http://www.lextek.com/manuals/onix/stopwords2.html).
 \newline
 \newline
-Furthermore, we noticed that all queries and the target data are written in British English. Because we use the pretrained Google News vector model, which only contains American English words, a lot of remained not found. So we did a hardcoded translation of the most frequent missing words - due to the lack of a good library - for the embedding results.
+Furthermore, we noticed that all queries and the target data are written in British English. Because we use the pre-trained Google News vector model, which only contains American English words, a lot of remained not found. So we did a hardcoded translation of the most frequent missing words - due to the lack of a good library - for the embedding results.
 \newline
 \newline
-We will report the Recall and \textit{Mean Averal Precision} (MAP) with a cutoff of 1000 documents in our results.
+We will report the Recall and \textit{Mean Average Precision} (MAP) with a cutoff of 1000 documents in our results.
