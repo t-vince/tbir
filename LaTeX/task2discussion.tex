@@ -5,7 +5,7 @@ Secondly we see that the precision decreases as the amount of documents increase
 \subsubsection{Unigram Language Model}
 The simple Unigram Model is the simpelest of all methods that we attempted. It is also the fastest of all methods that we attempted. However, this speed comes at an accuracy cost.
 The Simple Language Model does not account for words with a similar meaning, something the word embedding does account for and we can see that the word embedding is superior in accuracy.
-[More explanation about the charts]
+Although this simple unigram model manages to score fairly good on recall, we see the precision drop very rapidly. Even with a very small cutoff (< 10), a lot of mistakes are made. The general concensus for this unigram model is that most of the documents that should be suggested are retreived, but their rating is not high enough, making this a weak predictive model.
 
 \subsubsection{Wordembedding}
 Because the location of the word in the model gives semantic similarity, words with similar meanings are given similar vectors. This results in a more accurate result than the Unigram Language Model, as we can see in the results.
@@ -15,3 +15,6 @@ Because of the limited size of the documents, a lot of similar words are still f
 To calculate similarity, we sum the different vectors. The main problem with this approach is that it introduces a lot of noise. Every word contains a similar value. We have already attempted to reduce this problem by removing the stopwords (which increased our results), but this is not a total solution. A more intelligent method would be using weighted sum based on other information. (e.g. using Term Frequency Inverse Document Frequency (TF-IDF) to weigh terms based on their frequency) However, we have not attempted to add TF-IDF for a weighted sum (as it would increase the computational need) and can therefore only assume that it would further increase the accuracy.
 
 \subsubsection{LSI}
+Latent Dirichlet Allocation is one of the more sophistated methods for building word representations. Using priors from a dirichlet distribution, per-document-topic and per-topic-word distributions can be updated. LDA did not give the results that one would expect, scoring even lower than the simple unigram model.
+These results can be explained by the small length of the documents. After removing the stop words and lemmatizing the remaining words, most documents contain only five to ten words. This implies that, if we purely look at the length of things, we are actually matching queries with other queries. Per-document-topic distribution will therefor not give good results. In general, topics will not have a high chance of occuring in documents.
+Similarities are calculated by vectorizing and calculating the cosine similarity between document and query representations.
